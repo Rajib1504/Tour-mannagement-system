@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes"
@@ -15,14 +16,26 @@ import { sendResponse } from "../../utils/sendResponse";
 // }  
 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-      const user = await UserServices.createUser(req.body)
+// Google login দিয়ে user create করার controller
+const createUserWithGoogle = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+      const user = await UserServices.createUserWithGoogle(req.body)
 
       sendResponse(res,{
             success:true,
             statusCode:(httpStatus.CREATED),
-            message: `User created successfully`,
+            message: `User created successfully with Google`,
+            data:user
+      })
+})
+
+// Email/Password দিয়ে user register করার controller
+const createUserWithCredentials = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+      const user = await UserServices.createUserWithCredentials(req.body)
+
+      sendResponse(res,{
+            success:true,
+            statusCode:(httpStatus.CREATED),
+            message: `User registered successfully with credentials`,
             data:user
       })
 })
@@ -71,6 +84,7 @@ sendResponse(res,{
 
 
 export const UserControlers = {
-      createUser, getAllUser,
-
+      createUserWithGoogle,
+      createUserWithCredentials,
+      getAllUser,
 }

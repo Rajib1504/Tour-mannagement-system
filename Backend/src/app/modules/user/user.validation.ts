@@ -19,6 +19,13 @@ export const createUserZodSchema = z.object({
 
 })
 
+// Google login এর জন্য validation schema
+export const createGoogleUserZodSchema = z.object({
+      name: z.string({ message: "Name must be string" }).min(2, { message: "name too short. Mimimum 2 character long" }).max(20, { message: "Name is too long" }),
+      email: z.string({ message: "Email mush be string" }).email({ message: "INvalid email address format" }).min(5, { message: "email must be at least 5 characters long" }).max(100, { message: "email cannot exceed 1000 characters" }),
+      picture: z.string({ message: "Picture must be string" }).optional(),
+})
+
 export const updateZodSchema = z.object({
       name: z.string({ message: "Name must be string" }).min(2, { message: "name too short. Mimimum 2 character long" }).max(20, { message: "Name is too long" }).optional(),
      
