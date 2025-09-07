@@ -23,11 +23,9 @@ const jwtPayload = {
       role: isUserExist.role
 
 }
-
       const accessToken = jwt.sign(jwtPayload,'secret',{
             expiresIn:'1d'
       })
-
       // const {password,...rest}=isUserExist;
       // return {...rest};
       return {
