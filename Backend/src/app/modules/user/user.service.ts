@@ -1,7 +1,7 @@
 import AppError from "../../errorHelpers/AppError";
 import { IAuthProvider, Iuser } from "./user.interface";
 import { User } from './user.model';
-// import bcrypt from 'bcryptjs';
+import bcryptjs from "bcryptjs";
 import httpStatus from 'http-status-codes';
 
 const createUserWithGoogle = async (payload: Partial<Iuser>) => {
@@ -22,23 +22,30 @@ const createUserWithGoogle = async (payload: Partial<Iuser>) => {
 
 
 const createUserWithCredentials = async (payload: Partial<Iuser>) => {
-      const { email, ...rest } = payload;
+      const { email,password, ...rest } = payload;
 
       const isUserExist = await User.findOne({ email })
       if (isUserExist) {
             throw new AppError(httpStatus.BAD_REQUEST, "user already exist","")
       }
+       
+const hashedPassword = await bcryptjs.hash(password as string,10)
+
+// const comparePassword = await bcryptjs.compare(password as string,hashedPassword)
+// console.log(password,hashedPassword);
+// console.log(comparePassword);
+
       const authProvider: IAuthProvider = {
             provider: "credential",
             providerId: email || '' // Email as provider ID for credential login
       };
-
       const newUser = await User.create({
             email,
+            password:hashedPassword,
             auth: [authProvider],
             ...rest
       })
-      return newUser;
+      return {newUser};
 }
 
 
