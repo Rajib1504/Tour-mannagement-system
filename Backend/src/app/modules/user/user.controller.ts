@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes"
 import { UserServices } from "./user.service";
@@ -45,9 +45,10 @@ const createUserWithCredentials = catchAsync(async (req: Request, res: Response,
 // update user 
 const UpdateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       const  userId = req.params.id;
-      const token = req.headers.authorization
-      const verifiedToken = varifyToken(token as string,envVars.JWT_ACCESS_SECRET) as JwtPayload
-      const payload = req.body
+      // const token = req.headers.authorization
+      // const verifiedToken = varifyToken(token as string,envVars.JWT_ACCESS_SECRET) as JwtPayload
+      const verifiedToken = req.user;
+      const payload = req.body;
       const user = await UserServices.updateUser(userId,payload,verifiedToken)
 
       sendResponse(res,{
@@ -58,7 +59,7 @@ const UpdateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
       })
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 const getAllUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       const result = await UserServices.getAllUsers()
 

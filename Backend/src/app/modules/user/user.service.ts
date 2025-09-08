@@ -23,18 +23,18 @@ const createUserWithGoogle = async (payload: Partial<Iuser>) => {
 }
 // register 
 const createUserWithCredentials = async (payload: Partial<Iuser>) => {
-      const { email,password, ...rest } = payload;
+      const { email, password, ...rest } = payload;
 
       const isUserExist = await User.findOne({ email })
       if (isUserExist) {
-            throw new AppError(httpStatus.BAD_REQUEST, "user already exist","")
+            throw new AppError(httpStatus.BAD_REQUEST, "user already exist", "")
       }
-       
-const hashedPassword = await bcryptjs.hash(password as string,Number(envVars.BCRYPT_SALT_ROUND))
 
-// const comparePassword = await bcryptjs.compare(password as string,hashedPassword)
-// console.log(password,hashedPassword);
-// console.log(comparePassword);
+      const hashedPassword = await bcryptjs.hash(password as string, Number(envVars.BCRYPT_SALT_ROUND))
+
+      // const comparePassword = await bcryptjs.compare(password as string,hashedPassword)
+      // console.log(password,hashedPassword);
+      // console.log(comparePassword);
 
       const authProvider: IAuthProvider = {
             provider: "credential",
@@ -42,11 +42,11 @@ const hashedPassword = await bcryptjs.hash(password as string,Number(envVars.BCR
       };
       const newUser = await User.create({
             email,
-            password:hashedPassword,
+            password: hashedPassword,
             auth: [authProvider],
             ...rest
       })
-      return {newUser};
+      return { newUser };
 }
 // all user  
 const getAllUsers = async () => {
@@ -60,10 +60,10 @@ const getAllUsers = async () => {
       };
 }
 // update 
-const updateUser = async(userId:string, payload:Partial<Iuser>,decodedToken:JwtPayload)=>{
-      const ifUserExist =await User.findById(userId);
-      if(!ifUserExist){
-            throw new AppError(httpStatus.NOT_FOUND,"User Not Found",'')
+const updateUser = async (userId: string, payload: Partial<Iuser>, decodedToken: JwtPayload) => {
+      const ifUserExist = await User.findById(userId);
+      if (!ifUserExist) {
+            throw new AppError(httpStatus.NOT_FOUND, "User Not Found", '')
       }
       /**
        * email-can't be update
@@ -72,26 +72,25 @@ const updateUser = async(userId:string, payload:Partial<Iuser>,decodedToken:JwtP
        * only admin -role ,is deleted...
        * promoting to  superadmin -superadmin
        * */
-      if(payload.role){
-            if(decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE){
-                  throw new AppError(httpStatus.FORBIDDEN,"you're not authoized",'');
+      if (payload.role) {
+            if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+                  throw new AppError(httpStatus.FORBIDDEN, "you're not authoized", '');
             }
-            if(decodedToken.role === Role.ADMIN){
-                  // ADMIN can only set USER and GUIDE roles
-                  if(payload.role === Role.ADMIN || payload.role === Role.SUPER_ADMIN){
-                        throw new AppError(httpStatus.FORBIDDEN,"you're not authoized",''); 
-                  }
+            if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
+                  throw new AppError(httpStatus.FORBIDDEN, "you're not authoized", '');
             }
       }
-      if(payload.isActive || payload.isDeleted || payload.isVerified){
-            if(decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE){
-                  throw new AppError(httpStatus.FORBIDDEN,"you're not authoized",'');
+
+      
+      if (payload.isActive || payload.isDeleted || payload.isVerified) {
+            if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+                  throw new AppError(httpStatus.FORBIDDEN, "you're not authoized", '');
             }
       }
-      if(payload.password){
-            payload.password =await bcryptjs.hash(payload.password,envVars.BCRYPT_SALT_ROUND)
+      if (payload.password) {
+            payload.password = await bcryptjs.hash(payload.password, envVars.BCRYPT_SALT_ROUND)
       }
-      const newUpdateUser = await User.findByIdAndUpdate(userId,payload,{new:true,runValidators:true})
+      const newUpdateUser = await User.findByIdAndUpdate(userId, payload, { new: true, runValidators: true })
       return newUpdateUser
 }
 

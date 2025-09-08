@@ -15,6 +15,7 @@ export const checkAuth = (...authRoles:string[]) => (req: Request, res: Response
             if (!authRoles.includes(varifiedToken.role)) {
                   throw new AppError(403, 'You are not permitted to view this route', "")
             }
+            req.user = varifiedToken;
 
             next()
       } catch (error) {
