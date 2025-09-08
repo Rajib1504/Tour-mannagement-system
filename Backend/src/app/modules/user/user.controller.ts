@@ -5,6 +5,9 @@ import httpStatus from "http-status-codes"
 import { UserServices } from "./user.service";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
+import { varifyToken } from "../../utils/jwt";
+import { envVars } from "../config/env";
+import { JwtPayload } from "jsonwebtoken";
 
 
 //       const user = await UserServices.createUser(req.body)
@@ -36,6 +39,21 @@ const createUserWithCredentials = catchAsync(async (req: Request, res: Response,
             success:true,
             statusCode:(httpStatus.CREATED),
             message: `User registered successfully with credentials`,
+            data:user
+      })
+})
+// update user 
+const UpdateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+      const  userId = req.params.id;
+      const token = req.headers.authorization
+      const verifiedToken = varifyToken(token as string,envVars.JWT_ACCESS_SECRET) as JwtPayload
+      const payload = req.body
+      const user = await UserServices.updateUser(userId,payload,verifiedToken)
+
+      sendResponse(res,{
+            success:true,
+            statusCode:(httpStatus.CREATED),
+            message: `User updated successfully`,
             data:user
       })
 })
@@ -86,5 +104,6 @@ sendResponse(res,{
 export const UserControlers = {
       createUserWithGoogle,
       createUserWithCredentials,
+      UpdateUser,
       getAllUser,
 }

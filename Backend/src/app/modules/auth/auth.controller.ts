@@ -19,5 +19,5 @@ const loginfo = await AuthServices.credentialLogin(req.body)
       })
 })
 export const AuthControlers = {
-      credentialLogin
+      credentialLogin,
 }

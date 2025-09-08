@@ -13,7 +13,7 @@ const credentialLogin = async (payload: Partial<Iuser>) => {
       // find userexist ki nah 
       const isUserExist = await User.findOne({ email })
       const isPasswordMatch = await bcrypytjs.compare(password as string, isUserExist?.password as string)
-      if (!isUserExist) {
+      if (!isUserExist) { 
             throw new AppError(httpStatus.BAD_REQUEST, "user is not exist,Register", "") 
       }
       if (!isPasswordMatch) {
