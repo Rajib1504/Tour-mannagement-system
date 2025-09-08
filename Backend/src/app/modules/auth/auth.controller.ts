@@ -15,7 +15,7 @@ const loginfo = await AuthServices.credentialLogin(req.body)
             success:true,
             statusCode:(httpStatus.OK),
             message: `User Login successfully`,
-            data:loginfo
+            data:loginfo 
       })
 })
 export const AuthControlers = {

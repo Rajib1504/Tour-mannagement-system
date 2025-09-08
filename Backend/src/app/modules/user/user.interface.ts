@@ -33,7 +33,7 @@ export interface Iuser {
       address?: string,
       isDeleted?: string,
       isActive?: IsActive,
-      isVerified?: string,
+      isVerified?: boolean,
       role: Role,
       auth: IAuthProvider[], // array nebar krn holo user google login korly toh r password asy nah toh user jodi pore giye password save kore profile edit kore tkn email password diye o login korty parby toh amader ka6y akta user er login korar 2 to jinis holo ty ata k array hisaby nawa holo
       booking?: Types.ObjectId[],//user er sob booking er unique id k array er mody rakhty hoby user model e jaty pore dkehty pare/ ba janty pare
